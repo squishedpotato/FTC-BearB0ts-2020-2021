@@ -113,7 +113,11 @@ public class FTC20202021Program extends LinearOpMode {
   private DcMotor backright;
   private DcMotor clawMotor;
   private Servo claw;
+  private Servo foldClaw;
   private DcMotor intakeMotor;
+  private Servo ringClaw;
+  private Servo armRingClaw;
+  private Servo ringClawTwo;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -125,7 +129,11 @@ public class FTC20202021Program extends LinearOpMode {
     backright = hardwareMap.get(DcMotor.class, "backright");
     clawMotor = hardwareMap.get(DcMotor.class, "clawMotor");
     claw = hardwareMap.get(Servo.class, "claw");
+    foldClaw = hardwareMap.get(Servo.class, "foldClaw");
     intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+    ringClaw = hardwareMap.get(Servo.class, "ringClaw");
+    armRingClaw = hardwareMap.get(Servo.class, "armRingClaw");
+    ringClawTwo = hardwareMap.get(Servo.class, "ringClawTwo");
     
     //Reverses right motors so all spin in same direction.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -139,6 +147,7 @@ public class FTC20202021Program extends LinearOpMode {
       // Put run blocks here.
       horizontalLock = 1;
       verticalLock = 1;
+      
     }
     while (opModeIsActive()) {
       // Use left stick to drive and right stick to turn
@@ -181,6 +190,41 @@ public class FTC20202021Program extends LinearOpMode {
       if (gamepad2.a) {
           claw.setPosition(0);
         }
+      if (gamepad2.y) {
+          foldClaw.setPosition(0);
+        }
+      if (gamepad2.x) {
+        foldClaw.setPosition(1);
+      }
+      if(gamepad2.dpad_left){
+        armRingClaw.setPosition(0);
+      }
+      if(gamepad2.dpad_right){
+        armRingClaw.setPosition(0.75);
+      }
+      if(gamepad2.dpad_up){
+        ringClaw.setPosition(0);
+        ringClawTwo.setPosition(1);
+      }
+      if(gamepad2.dpad_down){
+        ringClaw.setPosition(1);
+        ringClawTwo.setPosition(0);
+      }
+      
+      /* Motor Direction Debug Buttons
+      if(gamepad1.a){
+        frontleft.setPower(1);
+      }
+      if(gamepad1.b){
+        frontright.setPower(1);
+      }
+      if(gamepad1.y){
+        backleft.setPower(1);
+      }
+      if(gamepad1.x){
+        backright.setPower(1);
+      }
+      */
       intakeMotor.setPower(gamepad1.left_trigger);
       //turning controls modified from bumpers to right stick don't mind useless if statements
       /*if(gamepad1.right_stick_x != 0){
