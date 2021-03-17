@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp(name = "FTC20202021Program (Blocks to Java)", group = "")
 public class FTC20202021Program extends LinearOpMode {
@@ -118,6 +120,7 @@ public class FTC20202021Program extends LinearOpMode {
   private Servo ringClaw;
   private Servo armRingClaw;
   private Servo ringClawTwo;
+  private CRServo wobbleLift;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -134,6 +137,7 @@ public class FTC20202021Program extends LinearOpMode {
     ringClaw = hardwareMap.get(Servo.class, "ringClaw");
     armRingClaw = hardwareMap.get(Servo.class, "armRingClaw");
     ringClawTwo = hardwareMap.get(Servo.class, "ringClawTwo");
+    wobbleLift = hardwareMap.get(CRServo.class, "wobbleLift");
     
     //Reverses right motors so all spin in same direction.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -141,6 +145,7 @@ public class FTC20202021Program extends LinearOpMode {
     backleft.setDirection(DcMotorSimple.Direction.REVERSE);
     backright.setDirection(DcMotorSimple.Direction.FORWARD);
     clawMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    wobbleLift.setDirection(DcMotorSimple.Direction.FORWARD);
     
     waitForStart();
     if (opModeIsActive()) {
@@ -184,6 +189,8 @@ public class FTC20202021Program extends LinearOpMode {
       backleft.setPower(calcFRBLPower(leftStickAngle) + gamepad1.right_stick_x);
       backright.setPower(calcFLBRPower(leftStickAngle) - gamepad1.right_stick_x);
       clawMotor.setPower(gamepad2.right_stick_y);
+      wobbleLift.setPower(gamepad2.right_stick_y);
+      
       if (gamepad2.b) {
           claw.setPosition(1);
         }
@@ -194,7 +201,7 @@ public class FTC20202021Program extends LinearOpMode {
           foldClaw.setPosition(0);
         }
       if (gamepad2.x) {
-        foldClaw.setPosition(1);
+        foldClaw.setPosition(.5);
       }
       if(gamepad2.dpad_left){
         armRingClaw.setPosition(0);
