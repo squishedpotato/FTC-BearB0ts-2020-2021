@@ -89,7 +89,26 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
       */
     }
   }
-
+  private void moveVertical(double inch){
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setTargetPosition(calcTicks(inch));
+    frontright.setTargetPosition(calcTicks(inch));
+    backleft.setTargetPosition(calcTicks(inch));
+    backright.setTargetPosition(calcTicks(inch));
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+  }
+  private int calcTicks(double input){
+    int round = (int)(155.223 * input);
+    //155.223 is 1440 ticks/inches in circumference of wheel
+    //"Dimensional analysis"
+    return round;
+  }
   /*
   private void moveFWDin(double inch) {
     frontleft.setTargetPosition((inch * 1440) / (2.5 * Math.PI));
