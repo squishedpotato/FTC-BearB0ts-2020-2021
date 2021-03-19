@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -8,6 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 @Autonomous(name = "simpleAuto", group = "")
 
@@ -28,6 +33,8 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     private Servo ringClawTwo;
     private DcMotor ringMotor;
     private CRServo wobbleLift;
+    private ColorSensor colorA_REV_ColorRangeSensor;
+    private ColorSensor colorB_REV_ColorRangeSensor;
 
    @Override
   public void runOpMode() {
@@ -44,6 +51,8 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     armRingClaw = hardwareMap.get(Servo.class, "armRingClaw");
     ringClawTwo = hardwareMap.get(Servo.class, "ringClawTwo");
     wobbleLift = hardwareMap.get(CRServo.class, "wobbleLift");
+    colorA_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorA");
+    colorB_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorB");
 
     // Put initialization blocks here.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -87,6 +96,31 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
         // Put loop blocks here.
       }
       */
+      
+      moveVertical(-26.5);
+      //turn90CCW();
+      ringSensor();
+    telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
+    telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
+    telemetry.update();
+    sleep(7000);
+    }
+  }
+  private void ringSensor(){
+    if(colorA_REV_ColorRangeSensor.red() > 200 && colorB_REV_ColorRangeSensor.red() > 200){
+      //Go to C
+      moveVertical(-80);
+      telemetry.addData("C", "yes");
+    }
+    else if(colorA_REV_ColorRangeSensor.red() > 200){
+      //Go to B
+      moveVertical(-50);
+      telemetry.addData("B", "yes");
+    }
+    else {
+      //Go to A
+      moveVertical(-30);
+      telemetry.addData("A", "yes");
     }
   }
   private void moveVertical(double inch){
@@ -102,6 +136,49 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
+  }
+  private void moveHorizontal(double inch){
+    //in progress
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setTargetPosition(calcTicks(inch*0.00659722));
+    frontright.setTargetPosition(calcTicks(inch*0.00659722));
+    backleft.setTargetPosition(calcTicks(inch*0.00659722));
+    backright.setTargetPosition(calcTicks(inch*0.00659722));
+    
+    //frontleft.setTargetPosition(1440);
+    //frontright.setTargetPosition(-1440);
+    //backleft.setTargetPosition(-1440);
+    //backright.setTargetPosition(1440);
+    
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
   }
   private int calcTicks(double input){
     int round = (int)(155.223 * input);
@@ -125,7 +202,7 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     telemetry.addData("key", 123);
   }
-  
+  */
   private void turn90CCW() {
     frontleft.setTargetPosition(2400);
     backright.setTargetPosition(-2400);
@@ -139,6 +216,17 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
   }
 
   private void turn90CW() {
@@ -154,7 +242,18 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-  }*/
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
+  }
 }
 
 
