@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 @TeleOp(name = "FTC20202021Program (Blocks to Java)", group = "")
 public class FTC20202021Program extends LinearOpMode {
@@ -42,6 +47,8 @@ public class FTC20202021Program extends LinearOpMode {
   private Servo armRingClaw;
   private Servo ringClawTwo;
   private CRServo wobbleLift;
+  private ColorSensor colorA_REV_ColorRangeSensor;
+  private ColorSensor colorB_REV_ColorRangeSensor;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -60,6 +67,8 @@ public class FTC20202021Program extends LinearOpMode {
     armRingClaw = hardwareMap.get(Servo.class, "armRingClaw");
     ringClawTwo = hardwareMap.get(Servo.class, "ringClawTwo");
     wobbleLift = hardwareMap.get(CRServo.class, "wobbleLift");
+    colorA_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorA");
+    colorB_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorB");
     
     //Reverses right motors so all spin in same direction.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -113,7 +122,7 @@ public class FTC20202021Program extends LinearOpMode {
       backright.setPower(calcFLBRPower(leftStickAngle) - gamepad1.right_stick_x);
       clawMotor.setPower(gamepad2.right_stick_y);
       wobbleLift.setPower(gamepad2.right_stick_y);
-      ringMotor.setPower(gamepad2.left_stick_y);
+      //ringMotor.setPower(gamepad2.left_stick_y);
       ringMotorEncoder = ringMotor.getCurrentPosition();
       if(gamepad2.left_stick_y < 0.5 && gamepad2.left_stick_y > -0.5 && gamepad2.right_bumper) {
         while(ringMotorEncoder > ringMotor.getCurrentPosition() && gamepad2.right_bumper){
@@ -165,7 +174,8 @@ public class FTC20202021Program extends LinearOpMode {
         backright.setPower(1);
       }
       */
-      intakeMotor.setPower(gamepad1.left_trigger);
+      intakeMotor.setPower(-gamepad1.left_trigger);
+      ringMotor.setPower(gamepad1.right_trigger);
       
     telemetry.addData("frontleft pow", frontleft.getPower());
     telemetry.addData("frontleft encoder", frontleft.getCurrentPosition());
@@ -180,6 +190,8 @@ public class FTC20202021Program extends LinearOpMode {
     telemetry.addData("RightStickAngleDegrees", rightStickAngle / Math.PI * 180);
     telemetry.addData("RightStickMagnitude", rightStickMagnitude);
     telemetry.addData("Trigger", gamepad1.left_trigger);
+    telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
+    telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
     telemetry.addData("Debug", debugBoolean);
     telemetry.addData("Error Code", error);
     telemetry.update();
