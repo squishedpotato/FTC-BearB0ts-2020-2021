@@ -103,6 +103,7 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
     telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
     telemetry.update();
+    intakeMotor.setPower(0.2);
     sleep(7000);
     }
   }
