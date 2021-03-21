@@ -123,7 +123,7 @@ public class FTC20202021Program extends LinearOpMode {
       clawMotor.setPower(gamepad2.right_stick_y);
       wobbleLift.setPower(gamepad2.right_stick_y);
       //ringMotor.setPower(gamepad2.left_stick_y);
-      ringMotorEncoder = ringMotor.getCurrentPosition();
+      /*ringMotorEncoder = ringMotor.getCurrentPosition();
       if(gamepad2.left_stick_y < 0.5 && gamepad2.left_stick_y > -0.5 && gamepad2.right_bumper) {
         while(ringMotorEncoder > ringMotor.getCurrentPosition() && gamepad2.right_bumper){
           ringMotor.setPower(0.5);
@@ -131,7 +131,7 @@ public class FTC20202021Program extends LinearOpMode {
         while(ringMotorEncoder < ringMotor.getCurrentPosition() && gamepad2.right_bumper){
           ringMotor.setPower(-0.5);
         }
-      }
+      }*/
       
       if (gamepad2.b) {
           claw.setPosition(1);
