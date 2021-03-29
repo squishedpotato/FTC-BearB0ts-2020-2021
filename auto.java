@@ -35,6 +35,8 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     private CRServo wobbleLift;
     private ColorSensor colorA_REV_ColorRangeSensor;
     private ColorSensor colorB_REV_ColorRangeSensor;
+    double colorMaxA = 0;
+    double colorMaxB = 0;
 
    @Override
   public void runOpMode() {
@@ -61,7 +63,18 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setDirection(DcMotorSimple.Direction.FORWARD);
     clawMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     wobbleLift.setDirection(DcMotorSimple.Direction.FORWARD);
-    ringMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    ringMotor.setDirection(DcMotorSimple.Direction.FORWARD);    
+    
+    frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
+    telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
+    telemetry.addData("colorMaxA", colorMaxA);
+    telemetry.addData("colorMaxB", colorMaxB);
+    
     // ORDER MATTERS W/ REVERSE
     // 1440 = full rotation
     waitForStart();
@@ -99,30 +112,33 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
       
       moveVertical(-26.5);
       //turn90CCW();
-      ringSensor();
-    telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
-    telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
-    telemetry.update();
+      //ringSensor();
+      scanRings();
+
     intakeMotor.setPower(0.2);
     sleep(7000);
     }
   }
   private void ringSensor(){
-    if(colorA_REV_ColorRangeSensor.red() > 200 && colorB_REV_ColorRangeSensor.red() > 200){
+    if(colorMaxA > 200 && colorMaxB > 200){
       //Go to C
       moveVertical(-80);
+      turn90CCW();
       telemetry.addData("C", "yes");
     }
-    else if(colorA_REV_ColorRangeSensor.red() > 200){
+    else if(colorMaxA > 200){
       //Go to B
       moveVertical(-50);
+      turn90CCW();
       telemetry.addData("B", "yes");
     }
     else {
       //Go to A
       moveVertical(-30);
+      turn90CCW();
       telemetry.addData("A", "yes");
     }
+    telemetry.update();
   }
   private void moveVertical(double inch){
     frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -142,12 +158,13 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backleft.setPower(1);
     backright.setPower(1);
     while(frontleft.isBusy()){
-      
+       telemetry.update();
     }
     frontleft.setPower(0);
     frontright.setPower(0);
     backleft.setPower(0);
     backright.setPower(0);
+    telemetry.update();
   }
   private void moveHorizontal(double inch){
     //in progress
@@ -155,10 +172,10 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    frontleft.setTargetPosition(calcTicks(inch*0.00659722));
-    frontright.setTargetPosition(calcTicks(inch*0.00659722));
-    backleft.setTargetPosition(calcTicks(inch*0.00659722));
-    backright.setTargetPosition(calcTicks(inch*0.00659722));
+    frontleft.setTargetPosition((int)(inch*0.00659722));
+    frontright.setTargetPosition((int)(inch*0.00659722));
+    backleft.setTargetPosition((int)(inch*0.00659722));
+    backright.setTargetPosition((int)(inch*0.00659722));
     
     //frontleft.setTargetPosition(1440);
     //frontright.setTargetPosition(-1440);
@@ -174,18 +191,36 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backleft.setPower(1);
     backright.setPower(1);
     while(frontleft.isBusy()){
-      
+      maxColor();
+      telemetry.update();
     }
     frontleft.setPower(0);
     frontright.setPower(0);
     backleft.setPower(0);
     backright.setPower(0);
+    telemetry.update();
   }
   private int calcTicks(double input){
     int round = (int)(155.223 * input);
     //155.223 is 1440 ticks/inches in circumference of wheel
     //"Dimensional analysis"
+    telemetry.update();
     return round;
+  }
+  private void maxColor(){
+  	if(colorMaxA < colorA_REV_ColorRangeSensor.red()){
+  		colorMaxA = colorA_REV_ColorRangeSensor.red();
+  	}
+  	if(colorMaxB < colorB_REV_ColorRangeSensor.red()){
+  		colorMaxB = colorB_REV_ColorRangeSensor.red();
+  	}
+  	telemetry.update();
+  }
+  private void scanRings(){
+  	moveHorizontal(-10);
+  	moveHorizontal(15);
+  	ringSensor();
+  	telemetry.update();
   }
   /*
   private void moveFWDin(double inch) {
@@ -222,7 +257,7 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backleft.setPower(1);
     backright.setPower(1);
     while(frontleft.isBusy()){
-      
+      telemetry.update();
     }
     frontleft.setPower(0);
     frontright.setPower(0);
@@ -248,7 +283,7 @@ public class FTC20202021ProgramAuto extends LinearOpMode{
     backleft.setPower(1);
     backright.setPower(1);
     while(frontleft.isBusy()){
-      
+      telemetry.update();
     }
     frontleft.setPower(0);
     frontright.setPower(0);
