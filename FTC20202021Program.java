@@ -1,58 +1,44 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-@TeleOp(name = "FTC20202021Program (Blocks to Java)", group = "")
-public class FTC20202021Program extends LinearOpMode {
-  /* Error Codes:
-  1: calcFRBLPower Method error
-  2: calcFLBRPower Method error 
-  */
-  double horizontalLock = 1;
-  double verticalLock = 1;
-  double leftStickAngle = 0;
-  double leftStickX = 0;
-  double leftStickY = 0;
-  double leftStickMagnitude = 0;
-  double rightStickAngle = 0;
-  double rightStickX = 0;
-  double rightStickY = 0;
-  double rightStickMagnitude = 0;
-  int ringMotorEncoder = 0;
-  boolean debugBoolean = false;
-  int error = 0;
-  
-  
-  private DcMotor frontleft;
-  private DcMotor frontright;
-  private DcMotor backleft;
-  private DcMotor backright;
-  private DcMotor clawMotor;
-  private DcMotor ringMotor;
-  private Servo claw;
-  private Servo foldClaw;
-  private DcMotor intakeMotor;
-  private Servo ringClaw;
-  private Servo armRingClaw;
-  private Servo ringClawTwo;
-  private CRServo wobbleLift;
-  private ColorSensor colorA_REV_ColorRangeSensor;
-  private ColorSensor colorB_REV_ColorRangeSensor;
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
-  @Override
+@Autonomous(name = "simpleAuto", group = "")
+
+public class FTC20202021ProgramAuto extends LinearOpMode{
+    private Blinker expansion_Hub_2;
+    private Blinker expansion_Hub_3;
+    private Servo armRingClaw;
+    private DcMotor backleft;
+    private DcMotor backright;
+    private Servo claw;
+    private DcMotor clawMotor;
+    private Servo foldClaw;
+    private DcMotor frontleft;
+    private DcMotor frontright;
+    private Gyroscope imu;
+    private DcMotor intakeMotor;
+    private Servo ringClaw;
+    private Servo ringClawTwo;
+    private DcMotor ringMotor;
+    private CRServo wobbleLift;
+    private ColorSensor colorA_REV_ColorRangeSensor;
+    private ColorSensor colorB_REV_ColorRangeSensor;
+    double colorMaxA = 0;
+    double colorMaxB = 0;
+
+   @Override
   public void runOpMode() {
     frontleft = hardwareMap.get(DcMotor.class, "frontleft");
     frontright = hardwareMap.get(DcMotor.class, "frontright");
@@ -69,214 +55,242 @@ public class FTC20202021Program extends LinearOpMode {
     wobbleLift = hardwareMap.get(CRServo.class, "wobbleLift");
     colorA_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorA");
     colorB_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorB");
-    
-    //Reverses right motors so all spin in same direction.
+
+    // Put initialization blocks here.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
     frontright.setDirection(DcMotorSimple.Direction.FORWARD);
     backleft.setDirection(DcMotorSimple.Direction.REVERSE);
     backright.setDirection(DcMotorSimple.Direction.FORWARD);
     clawMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     wobbleLift.setDirection(DcMotorSimple.Direction.FORWARD);
-    ringMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    ringMotor.setDirection(DcMotorSimple.Direction.FORWARD);    
     
-    waitForStart();
-    if (opModeIsActive()) {
-      // Put run blocks here.
-      horizontalLock = 1;
-      verticalLock = 1;
-      
-    }
-    while (opModeIsActive()) {
-      // Use left stick to drive and right stick to turn
-      // Note: DO NOT PRESS MODE BUTTON
-      // Bottom If "Locks" Direction
-      debugBoolean = false;
-      leftStickX = gamepad1.left_stick_x;
-      leftStickY = -gamepad1.left_stick_y;
-      if(leftStickX == 0 && leftStickY == 0) {
-        leftStickAngle = 0;
-        leftStickMagnitude = 0;
-      }
-      else if(leftStickX < 0 && leftStickY >= 0) {
-        leftStickAngle = Math.atan(leftStickY/leftStickX) + Math.PI;
-        leftStickMagnitude = Math.sqrt(Math.pow(leftStickX,2) + Math.pow(leftStickY,2));
-        //debugBoolean = true;
-      }
-      else if(leftStickX < 0 && leftStickY <= 0) {
-        leftStickAngle = Math.atan(leftStickY/leftStickX) + Math.PI;
-        leftStickMagnitude = Math.sqrt(Math.pow(leftStickX,2) + Math.pow(leftStickY,2));
-        //debugBoolean = true;
-      }
-      else if(leftStickX >= 0 && leftStickY <= 0) {
-        leftStickAngle = Math.atan(leftStickY/leftStickX) + 2*Math.PI;
-        leftStickMagnitude = Math.sqrt(Math.pow(leftStickX,2) + Math.pow(leftStickY,2));
-        //debugBoolean = true;
-      }
-      else {
-        leftStickAngle = Math.atan(leftStickY/leftStickX);
-        leftStickMagnitude = Math.sqrt(Math.pow(leftStickX,2) + Math.pow(leftStickY,2));
-      }
-      frontleft.setPower(calcFLBRPower(leftStickAngle) + gamepad1.right_stick_x);
-      frontright.setPower(calcFRBLPower(leftStickAngle) - gamepad1.right_stick_x);
-      backleft.setPower(calcFRBLPower(leftStickAngle) + gamepad1.right_stick_x);
-      backright.setPower(calcFLBRPower(leftStickAngle) - gamepad1.right_stick_x);
-      clawMotor.setPower(gamepad2.right_stick_y);
-      wobbleLift.setPower(gamepad2.right_stick_y);
-      //ringMotor.setPower(gamepad2.left_stick_y);
-      /*ringMotorEncoder = ringMotor.getCurrentPosition();
-      if(gamepad2.left_stick_y < 0.5 && gamepad2.left_stick_y > -0.5 && gamepad2.right_bumper) {
-        while(ringMotorEncoder > ringMotor.getCurrentPosition() && gamepad2.right_bumper){
-          ringMotor.setPower(0.5);
-        }
-        while(ringMotorEncoder < ringMotor.getCurrentPosition() && gamepad2.right_bumper){
-          ringMotor.setPower(-0.5);
-        }
-      }*/
-      
-      if (gamepad2.b) {
-          claw.setPosition(1);
-        }
-      if (gamepad2.a) {
-          claw.setPosition(0);
-        }
-      if (gamepad2.y) {
-          foldClaw.setPosition(0);
-        }
-      if (gamepad2.x) {
-        foldClaw.setPosition(.5);
-      }
-      if(gamepad2.dpad_down){
-        armRingClaw.setPosition(0);
-      }
-      if(gamepad2.dpad_up){
-        armRingClaw.setPosition(0.7);
-      }
-      if(gamepad2.dpad_left){
-        ringClaw.setPosition(0.5);
-        ringClawTwo.setPosition(0.5);
-      }
-      if(gamepad2.dpad_right){
-        ringClaw.setPosition(0);
-        ringClawTwo.setPosition(1);
-      }
-      
-      /* Motor Direction Debug Buttons
-      if(gamepad1.a){
-        frontleft.setPower(1);
-      }
-      if(gamepad1.b){
-        frontright.setPower(1);
-      }
-      if(gamepad1.y){
-        backleft.setPower(1);
-      }
-      if(gamepad1.x){
-        backright.setPower(1);
-      }
-      */
-      intakeMotor.setPower(-gamepad1.left_trigger);
-      ringMotor.setPower(gamepad1.right_trigger);
-      
-    telemetry.addData("frontleft pow", frontleft.getPower());
-    telemetry.addData("frontleft encoder", frontleft.getCurrentPosition());
-    telemetry.addData("frontright pow", frontright.getPower());
-    telemetry.addData("frontright encoder", frontright.getCurrentPosition());
-    telemetry.addData("backleft pow", backleft.getPower());
-    telemetry.addData("backleft encoder", backleft.getCurrentPosition());
-    telemetry.addData("backright pow", backright.getPower());
-    telemetry.addData("backright encoder", backright.getCurrentPosition());
-    telemetry.addData("right stick x axis", rightStickX);
-    telemetry.addData("right stick y axis", rightStickY);
-    telemetry.addData("RightStickAngleDegrees", rightStickAngle / Math.PI * 180);
-    telemetry.addData("RightStickMagnitude", rightStickMagnitude);
-    telemetry.addData("Trigger", gamepad1.left_trigger);
+    frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
     telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
-    telemetry.addData("Debug", debugBoolean);
-    telemetry.addData("Error Code", error);
-    telemetry.update();
+    telemetry.addData("colorMaxA", colorMaxA);
+    telemetry.addData("colorMaxB", colorMaxB);
+    
+    // ORDER MATTERS W/ REVERSE
+    // 1440 = full rotation
+    waitForStart();
+    if (opModeIsActive()) {
+      /*
+      // Put run blocks here.
+      backlefts.setPosition(1);
+      backrights.setPosition(0);
+      moveFWDin(30);
+      frontleft.setPower(0.5);
+      frontright.setPower(0.5);
+      backleft.setPower(0.5);
+      backright.setPower(0.5);
+      while (frontleft.isBusy()) {
+      }
+      backlefts.setPosition(0);
+      backrights.setPosition(1);
+      sleep(1000);
+      moveFWDin(-30);
+      // about -12 inches off
+      while (frontleft.isBusy()) {
+      }
+      turn90CCW();
+      while (frontleft.isBusy()) {
+      }
+      backlefts.setPosition(1);
+      backrights.setPosition(0);
+      sleep(1000);
+      moveFWDin(-25);
+      telemetry.update();
+      while (opModeIsActive()) {
+        // Put loop blocks here.
+      }
+      */
+      
+      moveVertical(-26.5);
+      //turn90CCW();
+      //ringSensor();
+      scanRings();
+
+    intakeMotor.setPower(0.2);
+    sleep(7000);
     }
   }
-  private double calcFRBLPower(double angle) {
-      //easierDouble keeps code more readable: turns 1/4 pi into units of 1
-      double easierDouble = 4*angle/Math.PI;
-      //Because I am starting to become tired typing out Math.PI 
-      double pi = Math.PI;
-      //All axis cases 
-      if(angle == 0){
-        return (-1)*leftStickMagnitude;
-      }
-      if(angle == pi/2){
-        return (1)*leftStickMagnitude;
-      }
-      if(angle == pi){
-        return (1)*leftStickMagnitude;
-      }
-      if(angle == 3*pi/2){
-        return (-1)*leftStickMagnitude;
-      }
-      if(angle == 2*pi){
-        return (-1)*leftStickMagnitude;
-      }
-      //All non-axis cases
-      if(angle > 0 && angle < pi/2) {
-        return (easierDouble-1)*leftStickMagnitude;
-      }
-      else if(angle > pi/2 && angle < pi){
-        return (1)*leftStickMagnitude;
-      }
-      else if(angle > pi && angle < 3 * pi/2){
-        return (-easierDouble + 5)*leftStickMagnitude;
-      }
-      else if(angle > 3*pi/2 && angle < 2 * pi){
-        return (-1);
-      }
-      else{
-        //error code if this somehow breaks???
-        error = 1;
-        return 0;
-      }
+  private void ringSensor(){
+    if(colorMaxA > 200 && colorMaxB > 200){
+      //Go to C
+      moveVertical(-80);
+      turn90CCW();
+      telemetry.addData("C", "yes");
+    }
+    else if(colorMaxA > 200){
+      //Go to B
+      moveVertical(-50);
+      turn90CCW();
+      telemetry.addData("B", "yes");
+    }
+    else {
+      //Go to A
+      moveVertical(-30);
+      turn90CCW();
+      telemetry.addData("A", "yes");
+    }
+    telemetry.update();
   }
-  private double calcFLBRPower(double angle) {
-      //easierDouble keeps code more readable: turns 1/4 pi into units of 1
-      double easierDouble = 4*angle/Math.PI;
-      //Because I need to redefine variables in new methods (functions in javascript) 
-      double pi = Math.PI;
-      //All axis cases 
-      if(angle == 0){
-        return (1)*leftStickMagnitude;
+  private void moveVertical(double inch){
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setTargetPosition(calcTicks(inch));
+    frontright.setTargetPosition(calcTicks(inch));
+    backleft.setTargetPosition(calcTicks(inch));
+    backright.setTargetPosition(calcTicks(inch));
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+       telemetry.update();
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
+    telemetry.update();
+  }
+  private void moveHorizontal(double inch){
+    //in progress
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setTargetPosition((int)(inch*0.00659722));
+    frontright.setTargetPosition((int)(inch*0.00659722));
+    backleft.setTargetPosition((int)(inch*0.00659722));
+    backright.setTargetPosition((int)(inch*0.00659722));
+    
+    //frontleft.setTargetPosition(1440);
+    //frontright.setTargetPosition(-1440);
+    //backleft.setTargetPosition(-1440);
+    //backright.setTargetPosition(1440);
+    
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      maxColor();
+      telemetry.update();
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
+    telemetry.update();
+  }
+  private int calcTicks(double input){
+    int round = (int)(155.223 * input);
+    //155.223 is 1440 ticks/inches in circumference of wheel
+    //"Dimensional analysis"
+    telemetry.update();
+    return round;
+  }
+  private void maxColor(){
+      if(colorMaxA < colorA_REV_ColorRangeSensor.red()){
+          colorMaxA = colorA_REV_ColorRangeSensor.red();
       }
-      if(angle == pi/2){
-        return (1)*leftStickMagnitude;
+      if(colorMaxB < colorB_REV_ColorRangeSensor.red()){
+          colorMaxB = colorB_REV_ColorRangeSensor.red();
       }
-      if(angle == pi){
-        return (-1)*leftStickMagnitude;
-      }
-      if(angle == 3*pi/2){
-        return (-1)*leftStickMagnitude;
-      }
-      if(angle == 2*pi){
-        return (1)*leftStickMagnitude;
-      }
-      
-      //All non-axis cases
-      if(angle > 0 && angle < pi/2){
-        return (1)*leftStickMagnitude;
-      }
-      else if(angle > pi/2 && angle < pi){
-        return (-easierDouble+3)*leftStickMagnitude;
-      }
-      else if(angle > pi && angle < 3*pi/2){
-        return (-1)*leftStickMagnitude;
-      }
-      else if(angle > 3*pi/2 && angle < 2*pi){
-        return (easierDouble-7)*leftStickMagnitude;
-      }
-      else {
-        //error code maybe
-        //turns out error codes are EXTREMELY useful tools
-        error = 2;
-        return 0;
-      }
+      telemetry.update();
+  }
+  private void scanRings(){
+      moveHorizontal(-10);
+      moveHorizontal(15);
+      ringSensor();
+      telemetry.update();
+  }
+  /*
+  private void moveFWDin(double inch) {
+    frontleft.setTargetPosition((inch * 1440) / (2.5 * Math.PI));
+    frontright.setTargetPosition((inch * 1440) / (2.5 * Math.PI));
+    backleft.setTargetPosition((inch * 1440) / (2.5 * Math.PI));
+    backright.setTargetPosition((inch * 1440) / (2.5 * Math.PI));
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    telemetry.addData("key", 123);
+  }
+  */
+  private void turn90CCW() {
+    frontleft.setTargetPosition(2400);
+    backright.setTargetPosition(-2400);
+    frontright.setTargetPosition(-2400);
+    backleft.setTargetPosition(2400);
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      telemetry.update();
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
+  }
+
+  private void turn90CW() {
+    frontleft.setTargetPosition(-2400);
+    backright.setTargetPosition(2400);
+    frontright.setTargetPosition(2400);
+    backleft.setTargetPosition(-2400);
+    frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    frontleft.setPower(1);
+    frontright.setPower(1);
+    backleft.setPower(1);
+    backright.setPower(1);
+    while(frontleft.isBusy()){
+      telemetry.update();
+    }
+    frontleft.setPower(0);
+    frontright.setPower(0);
+    backleft.setPower(0);
+    backright.setPower(0);
   }
 }
+
+
+
