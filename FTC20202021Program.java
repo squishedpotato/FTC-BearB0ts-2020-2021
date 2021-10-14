@@ -38,8 +38,6 @@ public class FTC20202021Program extends LinearOpMode {
   private DcMotor frontright;
   private DcMotor backleft;
   private DcMotor backright;
-  //private ColorSensor colorA_REV_ColorRangeSensor;
-  //private ColorSensor colorB_REV_ColorRangeSensor;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
