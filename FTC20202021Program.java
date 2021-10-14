@@ -38,17 +38,8 @@ public class FTC20202021Program extends LinearOpMode {
   private DcMotor frontright;
   private DcMotor backleft;
   private DcMotor backright;
-  private DcMotor clawMotor;
-  private DcMotor ringMotor;
-  private Servo claw;
-  private Servo foldClaw;
-  private DcMotor intakeMotor;
-  private Servo ringClaw;
-  private Servo armRingClaw;
-  private Servo ringClawTwo;
-  private CRServo wobbleLift;
-  private ColorSensor colorA_REV_ColorRangeSensor;
-  private ColorSensor colorB_REV_ColorRangeSensor;
+  //private ColorSensor colorA_REV_ColorRangeSensor;
+  //private ColorSensor colorB_REV_ColorRangeSensor;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -58,26 +49,14 @@ public class FTC20202021Program extends LinearOpMode {
     frontright = hardwareMap.get(DcMotor.class, "frontright");
     backleft = hardwareMap.get(DcMotor.class, "backleft");
     backright = hardwareMap.get(DcMotor.class, "backright");
-    clawMotor = hardwareMap.get(DcMotor.class, "clawMotor");
-    ringMotor = hardwareMap.get(DcMotor.class, "ringMotor");
-    claw = hardwareMap.get(Servo.class, "claw");
-    foldClaw = hardwareMap.get(Servo.class, "foldClaw");
-    intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-    ringClaw = hardwareMap.get(Servo.class, "ringClaw");
-    armRingClaw = hardwareMap.get(Servo.class, "armRingClaw");
-    ringClawTwo = hardwareMap.get(Servo.class, "ringClawTwo");
-    wobbleLift = hardwareMap.get(CRServo.class, "wobbleLift");
-    colorA_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorA");
-    colorB_REV_ColorRangeSensor = hardwareMap.get(ColorSensor.class, "colorB");
+    
     
     //Reverses right motors so all spin in same direction.
     frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
     frontright.setDirection(DcMotorSimple.Direction.FORWARD);
     backleft.setDirection(DcMotorSimple.Direction.REVERSE);
     backright.setDirection(DcMotorSimple.Direction.FORWARD);
-    clawMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-    wobbleLift.setDirection(DcMotorSimple.Direction.FORWARD);
-    ringMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    
     
     waitForStart();
     if (opModeIsActive()) {
@@ -120,62 +99,6 @@ public class FTC20202021Program extends LinearOpMode {
       frontright.setPower(calcFRBLPower(leftStickAngle) - gamepad1.right_stick_x);
       backleft.setPower(calcFRBLPower(leftStickAngle) + gamepad1.right_stick_x);
       backright.setPower(calcFLBRPower(leftStickAngle) - gamepad1.right_stick_x);
-      clawMotor.setPower(gamepad2.right_stick_y);
-      wobbleLift.setPower(gamepad2.right_stick_y);
-      //ringMotor.setPower(gamepad2.left_stick_y);
-      /*ringMotorEncoder = ringMotor.getCurrentPosition();
-      if(gamepad2.left_stick_y < 0.5 && gamepad2.left_stick_y > -0.5 && gamepad2.right_bumper) {
-        while(ringMotorEncoder > ringMotor.getCurrentPosition() && gamepad2.right_bumper){
-          ringMotor.setPower(0.5);
-        }
-        while(ringMotorEncoder < ringMotor.getCurrentPosition() && gamepad2.right_bumper){
-          ringMotor.setPower(-0.5);
-        }
-      }*/
-      
-      if (gamepad2.b) {
-          claw.setPosition(1);
-        }
-      if (gamepad2.a) {
-          claw.setPosition(0);
-        }
-      if (gamepad2.y) {
-          foldClaw.setPosition(0);
-        }
-      if (gamepad2.x) {
-        foldClaw.setPosition(.5);
-      }
-      if(gamepad2.dpad_down){
-        armRingClaw.setPosition(0);
-      }
-      if(gamepad2.dpad_up){
-        armRingClaw.setPosition(0.7);
-      }
-      if(gamepad2.dpad_left){
-        ringClaw.setPosition(0.5);
-        ringClawTwo.setPosition(0.5);
-      }
-      if(gamepad2.dpad_right){
-        ringClaw.setPosition(0);
-        ringClawTwo.setPosition(1);
-      }
-      
-      /* Motor Direction Debug Buttons
-      if(gamepad1.a){
-        frontleft.setPower(1);
-      }
-      if(gamepad1.b){
-        frontright.setPower(1);
-      }
-      if(gamepad1.y){
-        backleft.setPower(1);
-      }
-      if(gamepad1.x){
-        backright.setPower(1);
-      }
-      */
-      intakeMotor.setPower(-gamepad1.left_trigger);
-      ringMotor.setPower(gamepad1.right_trigger);
       
     telemetry.addData("frontleft pow", frontleft.getPower());
     telemetry.addData("frontleft encoder", frontleft.getCurrentPosition());
@@ -190,8 +113,7 @@ public class FTC20202021Program extends LinearOpMode {
     telemetry.addData("RightStickAngleDegrees", rightStickAngle / Math.PI * 180);
     telemetry.addData("RightStickMagnitude", rightStickMagnitude);
     telemetry.addData("Trigger", gamepad1.left_trigger);
-    telemetry.addData("colorA", colorA_REV_ColorRangeSensor.red());
-    telemetry.addData("colorB", colorB_REV_ColorRangeSensor.red());
+
     telemetry.addData("Debug", debugBoolean);
     telemetry.addData("Error Code", error);
     telemetry.update();
