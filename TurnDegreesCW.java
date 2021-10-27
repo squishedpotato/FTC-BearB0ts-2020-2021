@@ -14,7 +14,14 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-public class TurnDegreesCW(double degrees,double power){
+public class TurnDegreesCW{
+  double degrees;
+  double power;
+  public TurnDegreesCW(double degreesJoystick,double powerMotor, DcMotor m1, DcMotor m2, DcMotor m3, DcMotor m4){
+    degrees = degreesJoystick;
+    power = powerMotor;
+  }
+  
   frontleft.setTargetPosition((int)(-2400.0/90*degrees));
   backright.setTargetPosition((int)(2400.0/90*degrees));
   frontright.setTargetPosition((int)(2400.0/90*degrees));
